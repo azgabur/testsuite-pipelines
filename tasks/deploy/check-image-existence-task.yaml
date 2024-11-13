@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: check-image-existence
+spec:
+  params:
+    - description: Kuadrant image url
+      name: index-image
+      type: string
+  steps:
+    - args:
+        - docker manifest inspect $(params.index-image)
+      command:
+        - /bin/sh
+        - -c
+      resources:
+        limits:
+          cpu: '250m'
+          memory: 128Mi
+      image: quay.io/rhn_support_azgabur/alpine/k8s:latest
+      imagePullPolicy: IfNotPresent
+      name: check-image-existence
