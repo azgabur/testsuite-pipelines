@@ -335,7 +335,7 @@ spec:
           wildcardPolicy: None
         EOF
 
-        # CA bundle that Router/Broken must trust to be able to communicate with Gateway via HTTPS
+        # CA bundle that Router/Broker must trust to be able to communicate with Gateway via HTTPS
         oc apply -n $MCP_GATEWAY_NAMESPACE -f - <<EOF
           apiVersion: v1
           kind: ConfigMap
@@ -359,6 +359,9 @@ spec:
         kubectl get cm trusted-ca-bundle -n $MCP_GATEWAY_NAMESPACE -o jsonpath='{.data.ca-bundle\.crt}' | \
         kubectl create secret generic "$GATEWAY_CA_BUNDLE_SECRET" \
         --from-file=ca-bundle.crt=/dev/stdin -n $MCP_GATEWAY_NAMESPACE
+
+        # label the secret so that MCP Gateway controller processes it
+        kubectl label secret "$GATEWAY_CA_BUNDLE_SECRET" mcp.kuadrant.io/secret=true -n $MCP_GATEWAY_NAMESPACE
 
         # patch server3 to disable DNS rebinding protection, see https://github.com/modelcontextprotocol/python-sdk/issues/1798
         kubectl -n mcp-test set env deployment/mcp-test-server3 FASTMCP_HTTP_HOST_ORIGIN_PROTECTION=false

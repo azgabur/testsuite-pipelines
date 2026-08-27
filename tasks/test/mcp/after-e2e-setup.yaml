@@ -37,7 +37,7 @@ spec:
 
         GATEWAY_TLS_SECRET="$(kubectl get ingresscontroller default -n openshift-ingress-operator -o jsonpath='{.spec.defaultCertificate.name}')"
 
-        # CA bundle that Router/Broken must trust to be able to communicate with Gateway via HTTPS
+        # CA bundle that Router/Broker must trust to be able to communicate with Gateway via HTTPS
         kubectl apply -n $(params.mcp-gateway-namespace) -f - <<EOF
           apiVersion: v1
           kind: ConfigMap
@@ -121,6 +121,9 @@ spec:
         metadata:
           name: mcp-gateway-extension
         spec:
+          caCertBundleRef:
+            key: ca-bundle.crt
+            name: trusted-ca-bundle
           publicHost: ${PUBLIC_HOST}
           targetRef:
             group: gateway.networking.k8s.io
@@ -195,14 +198,6 @@ spec:
         # Delete AuthPolicies - some are created as part of Auth E2E setup
         oc delete authpolicy --all -n gateway-system --wait=true --ignore-not-found=true
         oc delete authpolicy --all -n "$(params.mcp-gateway-namespace)" --wait=true --ignore-not-found=true
-
-        # Patching mcp-gateway Deployment to trust HTTPS GW Listener's certificate
-        kubectl patch deployment mcp-gateway -n "$(params.mcp-gateway-namespace)" --type='json' -p='[
-          {"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"gateway-ca-cert","configMap":{"name":"trusted-ca-bundle"}}},
-          {"op":"add","path":"/spec/template/spec/containers/0/volumeMounts/-","value":{"name":"gateway-ca-cert","mountPath":"/etc/gateway-ca-cert","readOnly":true}},
-          {"op":"add","path":"/spec/template/spec/containers/0/command/-","value":"--gateway-ca-cert=/etc/gateway-ca-cert/ca-bundle.crt"}
-        ]'
-        kubectl rollout status deployment/mcp-gateway -n $(params.mcp-gateway-namespace) --timeout=120s
 
         echo "After-e2e setup completed successfully"
 
