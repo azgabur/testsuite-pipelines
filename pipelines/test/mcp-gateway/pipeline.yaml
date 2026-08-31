@@ -25,10 +25,6 @@ spec:
     name: istio-provider
     type: string
     default: ossm3
-  - description: GatewayAPI CRD version. [v1.3.0, v1.4.0, v1.5.0] available; leave empty if installing on Openshift 4.19+.
-    name: gateway-crd
-    type: string
-    default: ""
 # MCP Gateway
   - description: Deploy MCP Gateway before running the MCP Gateway tests (true/false)
     name: deploy-mcp-gateway
@@ -168,8 +164,6 @@ spec:
         value: $(tasks.kubectl-login.results.kubeconfig-path)
       - name: istio-provider
         value: $(params.istio-provider)
-      - name: gateway-crd
-        value: $(params.gateway-crd)
       - name: additional-helm-tools-flags
         value: $(params.additional-helm-tools-flags)
       - name: install-tools

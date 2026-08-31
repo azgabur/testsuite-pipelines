@@ -13,9 +13,6 @@ spec:
     - description: Istio provider (ossm3, ocp); 'ossm3' (recommended for all Openshift versions), 'ocp' for installing Istio managed by Gateway API on OCP v4.19+ (not recommended - mTLS is not supported)
       name: istio-provider
       type: string
-    - description: GatewayAPI CRD version. [v1.2.1, v1.3.0, v1.4.0] available; leave empty if installing on Openshift 4.19+.
-      name: gateway-crd
-      type: string
     - description: Path to workspace kubeconfig
       name: kubeconfig-path
       type: string
@@ -216,7 +213,6 @@ spec:
           --set=kuadrant.operatorName="$(params.operator-name)" \
           --set=kuadrant.extensionsImage="" \
           --set=istio.istioProvider="$(params.istio-provider)" \
-          --set=gatewayAPI.version="$(params.gateway-crd)" \
           --set=tools.enabled=true \
           $(params.additional-helm-flags) \
           --wait --wait-for-jobs --debug \
@@ -245,7 +241,6 @@ spec:
           --set=kuadrant.channel="$(params.channel)" \
           --set=kuadrant.operatorName="$(params.operator-name)" \
           --set=istio.istioProvider="$(params.istio-provider)" \
-          --set=gatewayAPI.version="$(params.gateway-crd)" \
           --set=tools.enabled=true \
           $(params.additional-helm-flags) \
           --wait --wait-for-jobs --debug \
