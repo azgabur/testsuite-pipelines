@@ -15,6 +15,10 @@ spec:
     name: index-image
     type: string
     default: quay.io/kuadrant/kuadrant-operator-catalog:v1.3.1
+  - description: Helm chart version to install. If set, INDEX-IMAGE IS IGNORED.
+    name: chart-version
+    type: string
+    default: ""
   - description: Kuadrant image channel. Can be 'preview' for nightlies and 'stable' for releases
     name: channel
     type: string
@@ -72,6 +76,8 @@ spec:
     params:
       - name: index-image
         value: $(params.index-image)
+      - name: chart-version
+        value: $(params.chart-version)
       - name: channel
         value: $(params.channel)
       - name: istio-provider

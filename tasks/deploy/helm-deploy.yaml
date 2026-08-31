@@ -7,6 +7,10 @@ spec:
     - description: Kuadrant image url
       name: index-image
       type: string
+    - description: Helm chart version to install (helm '--version' flag). If set, 'index-image' is ignored and '--set=kuadrant.indexImage' is not used.
+      name: chart-version
+      type: string
+      default: ""
     - description: Kuadrant image channel. Can be 'preview' for nightlies and 'stable' for releases
       name: channel
       type: string
@@ -170,8 +174,14 @@ spec:
       #!/bin/bash -v
       set -e
       if [ "$(params.install-tools)" = "true" ]; then
+        if [ -n "$(params.chart-version)" ]; then
+          VERSION_FLAG="--version=$(params.chart-version)"
+        else
+          VERSION_FLAG="--version=0.0.0"
+        fi
         helm install -n=default \
         --repo https://kuadrant.io/helm-charts-olm \
+        $VERSION_FLAG \
         $(params.additional-helm-tools-flags) \
         --wait --wait-for-jobs --debug \
         tools-operators \
@@ -189,8 +199,14 @@ spec:
       #!/bin/bash -v
       set -e
       if [ "$(params.install-tools)" = "true" ]; then
+        if [ -n "$(params.chart-version)" ]; then
+          VERSION_FLAG="--version=$(params.chart-version)"
+        else
+          VERSION_FLAG="--version=0.0.0"
+        fi
         helm install -n=default \
         --repo https://kuadrant.io/helm-charts-olm \
+        $VERSION_FLAG \
         $(params.additional-helm-tools-flags) \
         --wait --wait-for-jobs --debug --timeout=10m0s \
         tools-instances \
@@ -208,10 +224,15 @@ spec:
       #!/bin/bash -v
       set -e
       if [ "$(params.install-kuadrant)" = "true" ]; then
+        if [ -n "$(params.chart-version)" ]; then
+          VERSION_IMAGE_FLAGS="--version=$(params.chart-version)"
+        else
+          VERSION_IMAGE_FLAGS="--version=0.0.0 --set=kuadrant.indexImage=$(params.index-image)"
+        fi
         helm install -n=default \
           --repo https://kuadrant.io/helm-charts-olm \
           --values=/mount/values-additional-manifests/additionalManifests.yaml \
-          --set=kuadrant.indexImage="$(params.index-image)" \
+          $VERSION_IMAGE_FLAGS \
           --set=kuadrant.channel="$(params.channel)" \
           --set=kuadrant.operatorName="$(params.operator-name)" \
           --set=kuadrant.extensionsImage="" \
@@ -238,10 +259,15 @@ spec:
       #!/bin/bash -v
       set -e
       if [ "$(params.install-kuadrant)" = "true" ]; then
+        if [ -n "$(params.chart-version)" ]; then
+          VERSION_IMAGE_FLAGS="--version=$(params.chart-version)"
+        else
+          VERSION_IMAGE_FLAGS="--version=0.0.0 --set=kuadrant.indexImage=$(params.index-image)"
+        fi
         helm install -n=default \
           --repo https://kuadrant.io/helm-charts-olm \
           --values=/mount/values-additional-manifests/additionalManifests.yaml \
-          --set=kuadrant.indexImage="$(params.index-image)" \
+          $VERSION_IMAGE_FLAGS \
           --set=kuadrant.channel="$(params.channel)" \
           --set=kuadrant.operatorName="$(params.operator-name)" \
           --set=istio.istioProvider="$(params.istio-provider)" \

@@ -148,6 +148,7 @@ Manual builds should only be performed in emergencies. See README.md for manual 
 ### Common Deploy Pipeline Parameters
 
 - `index-image` - Kuadrant operator catalog image (e.g., `quay.io/kuadrant/kuadrant-operator-catalog:v1.3.1`)
+- `chart-version` - Helm chart version to install (e.g., `1.3.0`); if set, `index-image` is ignored (default: empty)
 - `channel` - Operator channel (`preview` for nightlies, `stable` for releases)
 - `operator-name` - Operator name (`kuadrant-operator` or `rhcl-operator`)
 - `istio-provider` - Istio provider (`ossm3` recommended, `ocp` for OCP 4.19+ Gateway API-managed Istio)

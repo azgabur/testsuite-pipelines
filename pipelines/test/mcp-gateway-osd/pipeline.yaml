@@ -105,6 +105,10 @@ spec:
     name: kuadrant-index-image
     type: string
     default: ""
+  - description: Helm chart version to install. If set, INDEX-IMAGE IS IGNORED.
+    name: chart-version
+    type: string
+    default: ""
   - description: Kuadrant OLM channel. Can be 'preview' (nightlies) or 'stable' (releases)
     name: kuadrant-channel
     type: string
@@ -396,6 +400,8 @@ spec:
         value: $(params.install-kuadrant)
       - name: index-image
         value: $(params.kuadrant-index-image)
+      - name: chart-version
+        value: $(params.chart-version)
       - name: channel
         value: $(params.kuadrant-channel)
       - name: operator-name

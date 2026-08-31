@@ -27,6 +27,10 @@ spec:
       description: Kuadrant/RHCL index image, leave empty to install current RHCL GA
       name: index-image
       type: string
+    - description: Helm chart version to install. If set, INDEX-IMAGE IS IGNORED.
+      name: chart-version
+      type: string
+      default: ""
     - default: stable
       description: Kuadrant channel (stable, preview)
       name: channel
@@ -131,6 +135,8 @@ spec:
       params:
         - name: index-image
           value: $(params.index-image)
+        - name: chart-version
+          value: $(params.chart-version)
         - name: channel
           value: $(params.channel)
         - name: istio-provider
