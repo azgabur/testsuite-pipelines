@@ -45,6 +45,10 @@ spec:
     default: ""
   tasks:
   - name: check-image-existence
+    when:
+      - input: "$(params.index-image)"
+        operator: notin
+        values: ['']
     params:
       - name: index-image
         value: $(params.index-image)

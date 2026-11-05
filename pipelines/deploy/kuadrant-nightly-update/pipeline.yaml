@@ -37,6 +37,10 @@ spec:
       kind: Task
       name: nightly-image-date
   - name: check-image-existence
+    when:
+      - input: "$(tasks.nightly-image-date.results.nightly-image)"
+        operator: notin
+        values: ['']
     params:
       - name: index-image
         value: $(tasks.nightly-image-date.results.nightly-image)
